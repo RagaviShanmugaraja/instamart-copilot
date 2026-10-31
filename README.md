@@ -1,11 +1,13 @@
-
 # Instamart Customer Intelligence & Support Copilot
+
 ## Overview
+
 The Instamart Customer Intelligence & Support Copilot is a data-driven project designed to analyse customer behaviour, identify customers at risk of leaving, and improve customer support operations.
 
 The project uses Python, Pandas, NumPy, SQLite, Scikit-learn and machine learning techniques to build customer analytics and intelligent support workflows.
 
 ### Project Objectives
+
 Explore, clean and validate customer, product, order and support ticket datasets.
 
 Analyse sales performance using SQL and Pandas.
@@ -19,6 +21,7 @@ Build a support ticket triage system.
 Develop a policy-based RAG assistant and a mock tool-calling refund agent.
 
 ### Technologies Used
+
 Python
 
 Pandas and NumPy
@@ -36,54 +39,75 @@ Joblib
 VS Code
 
 ## Reproduce
-1. Clone the repository
 
+### 1. Clone the repository
+
+```powershell
 git clone https://github.com/RagaviShanmugaraja/instamart-copilot.git
 cd instamart-copilot
+```
 
-2. Create a virtual environment
+### 2. Create a virtual environment
+
+```powershell
 python -m venv .venv
+```
 
-3. Install dependencies
+### 3. Install dependencies
+
+```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
 
-4. Generate the datasets
+### 4. Generate the datasets
+
+```powershell
 .\.venv\Scripts\python.exe generate_data.py
+```
 
-5. Run the data preparation and analysis scripts
+### 5. Run the data preparation and analysis scripts
+
+```powershell
 .\.venv\Scripts\python.exe audit_data.py
-
 .\.venv\Scripts\python.exe clean_customers.py
-
 .\.venv\Scripts\python.exe clean_orders.py
-
 .\.venv\Scripts\python.exe store_data.py
-
 .\.venv\Scripts\python.exe validate_data.py
-
 .\.venv\Scripts\python.exe run_sql.py
-
 .\.venv\Scripts\python.exe pandas_analysis.py
+```
 
-6. Run Part B – Customer Intelligence
+### 6. Run Part B – Customer Intelligence
+
+```powershell
 .\.venv\Scripts\python.exe rfm_analysis.py
 .\.venv\Scripts\python.exe customer_clustering.py
 .\.venv\Scripts\python.exe lapse_prediction.py
+```
 
-7. Run Part C – Support Ticket Triage
+### 7. Run Part C – Support Ticket Triage
+
+```powershell
 .\.venv\Scripts\python.exe triage.py
+```
 
-8. Run Part D – Policy RAG and Refund Agent
+### 8. Run Part D – Policy RAG and Refund Agent
+
 The policy retrieval functions are implemented in policy_rag.py and are used by the refund agent.
 
+```powershell
 .\.venv\Scripts\python.exe -c "from refund_agent import run_all_scenarios; run_all_scenarios()"
 .\.venv\Scripts\python.exe refund_agent.py
+```
+
 The first command regenerates the seven scenario results in outputs/agent_runs.jsonl. The second command runs the checkpoint-and-resume demonstration and writes its checkpoint under state/.
 
 Run commands from the repository root. The supplied generate_data.py and mock_llm.py files should remain unmodified.
 
 ## Part A – Data Foundation
+
 ### 1. Data Exploration and Audit
+
 The raw datasets were explored to understand their structure, missing values, duplicate records and data quality issues.
 
 The datasets included:
@@ -100,7 +124,7 @@ Policy evaluation data
 
 Agent scenarios
 
-Important audit findings:
+#### Important audit findings
 
 | Data Quality Check | Result |
 
@@ -125,7 +149,8 @@ Important audit findings:
 | Customers with blank genders | 30 |
 
 ### 2. Data Cleaning
-#### Customer data:
+
+#### Customer data
 
 Standardised city names.
 
@@ -139,7 +164,7 @@ Filled missing ages using the median age for each city.
 
 Converted signup dates into datetime format.
 
-#### Order data:
+#### Order data
 
 Converted order timestamps into datetime format.
 
@@ -155,7 +180,7 @@ Filled missing delivery times for completed orders using the product category me
 
 Preserved missing delivery times for cancelled orders.
 
-#### Final cleaned data:
+#### Final cleaned data
 
 | Dataset | Rows |
 
@@ -174,6 +199,7 @@ Cancelled orders: 1,199
 Completed order revenue: INR 2,998,668.80
 
 ### 3. SQLite Database
+
 The cleaned datasets were stored in an SQLite database named:
 
 data/instamart.db
@@ -187,6 +213,7 @@ products
 orders
 
 ### 4. SQL Analysis
+
 Seven SQL queries were implemented and verified.
 
 | Query | Analysis |
@@ -207,7 +234,7 @@ Seven SQL queries were implemented and verified.
 
 | Q7 | Daily revenue with a running total |
 
-#### Important SQL results:
+#### Important SQL results
 
 Completed order revenue: INR 2,998,668.80.
 
@@ -222,6 +249,7 @@ Daily revenue records: 183.
 Final running revenue total: INR 2,998,668.80.
 
 ### 5. Pandas Analysis
+
 Four additional analyses were performed using Pandas.
 
 #### Revenue by city and category
@@ -275,19 +303,22 @@ Order amount and delivery time: approximately -0.003.
 The correlations were weak, indicating no strong linear relationship between these variables and order amount.
 
 ### 6. Data Validation
+
 The cleaned datasets and database were checked against the project validation requirements.
 
 Validation result: ALL CHECKPOINTS PASSED
 
 ## Part B – Customer Intelligence
+
 ### 1. RFM Analysis
+
 RFM analysis was performed using completed orders only.
 
 Snapshot date: 2025-10-01.
 
 Customers analysed: 1,175.
 
-#### RFM metrics:
+#### RFM metrics
 
 Recency: Days since the customer's most recent completed order.
 
@@ -326,6 +357,7 @@ Customers were assigned RFM scores and grouped into six segments.
 | Total | 1,175 |
 
 ### 2. K-means Customer Clustering
+
 K-means clustering was performed using Recency, Frequency and Monetary features. StandardScaler was used to scale the features.
 
 The elbow method and silhouette scores were evaluated for K=2 to K=8.
@@ -352,7 +384,7 @@ Selected K = 4.
 
 K=4 achieved the highest silhouette score of 0.5256. The inertia also showed a substantial reduction between K=3 and K=4. Together, these results support selecting four clusters.
 
-#### Cluster summary:
+#### Cluster summary
 
 | Cluster | Customers | Avg. Recency | Avg. Frequency | Avg. Monetary (INR) |
 
@@ -366,7 +398,7 @@ K=4 achieved the highest silhouette score of 0.5256. The inertia also showed a s
 
 | 3 | 182 | 110.04 | 2.20 | 685.99 |
 
-#### Business segment names:
+#### Business segment names
 
 Cluster 0: Occasional Customers
 
@@ -379,6 +411,7 @@ Cluster 3: Inactive Customers
 The Premium Customers segment contains 138 customers and has the highest average monetary value.
 
 ### 3. PCA Analysis
+
 Principal Component Analysis was performed on the scaled RFM features using two components.
 
 | Component | Explained Variance |
@@ -394,6 +427,7 @@ Principal Component Analysis was performed on the scaled RFM features using two 
 The first two principal components retain 85.23% of the total variance, allowing the three-dimensional RFM data to be represented in two dimensions while preserving most of its information.
 
 ### 4. Customer Lapse Prediction
+
 Customer lapse was defined using the following rules:
 
 Cohort: Customers with at least one completed order before 2025-09-01.
@@ -402,7 +436,7 @@ Lapsed (1): No completed orders between 2025-09-01 and 2025-09-30.
 
 Not lapsed (0): At least one completed order during September 2025.
 
-#### Cohort results:
+#### Cohort results
 
 | Metric | Result |
 
@@ -431,6 +465,7 @@ The learned training frequency mean was 8.1147, compared with the full cohort me
 No feature values were missing.
 
 ### 5. Model Training and Evaluation
+
 A DummyClassifier was used as the baseline.
 
 | Model | Accuracy | Lapsed F1 |
@@ -441,7 +476,7 @@ A DummyClassifier was used as the baseline.
 
 Logistic Regression and Random Forest were tuned using GridSearchCV with five-fold cross-validation and F1 scoring.
 
-#### Best parameters:
+#### Best parameters
 
 Logistic Regression: C=100.
 
@@ -455,23 +490,24 @@ Random Forest: max_depth=8, min_samples_leaf=10.
 
 | Random Forest | 0.6811 | 0.6591 | 0.6517 | 0.6554 |
 
-#### Test confusion matrices:
+#### Test confusion matrices
 
-Logistic Regression
-
+#### Logistic Regression
 
 [[111, 32],
 
- [ 31, 58]]
-Random Forest
+[ 31, 58]]
 
+#### Random Forest
 
 [[113, 30],
 
- [ 31, 58]]
+[ 31, 58]]
+
 Random Forest was selected because it achieved the higher test F1 score and higher precision, while recall was the same as Logistic Regression.
 
 ### 6. Class-Balancing Experiment
+
 The Logistic Regression training data was balanced by randomly oversampling the lapsed class with replacement. Oversampling was performed only on the training data.
 
 | Metric | Original Logistic Regression | Balanced Logistic Regression |
@@ -487,6 +523,7 @@ The Logistic Regression training data was balanced by randomly oversampling the 
 The balanced model improved recall and F1. It identified more lapsed customers, but precision decreased, resulting in more active customers being incorrectly flagged.
 
 ### 7. Feature Importance and Interpretation
+
 The five most important Random Forest features were:
 
 | Feature | Importance |
@@ -503,7 +540,7 @@ The five most important Random Forest features were:
 
 | Cancellation Rate | 0.0523 |
 
-#### Logistic Regression coefficient interpretations:
+Logistic Regression coefficient interpretations:
 
 Recency: +0.0396 — higher recency is associated with increased lapse odds.
 
@@ -514,6 +551,7 @@ Cancellation Rate: -0.1236 — a negative association in this fitted model, cond
 These are model associations and should not be interpreted as proof of causation.
 
 ### 8. Model Persistence and Retention List
+
 The selected Random Forest model was saved using joblib:
 
 outputs/lapse_model.joblib
@@ -541,12 +579,15 @@ outputs/retention_list.csv
 Limitation: Premium customer labels were assigned using full-window RFM data, including September 2025. Therefore, the retention list is illustrative and is not a leakage-free evaluation. The lapse prediction model's features were still restricted to information available before the September cutoff.
 
 ## Part C – Support Ticket Triage with Guardrails
+
 ### 1. Overview
+
 A support ticket triage pipeline was developed using the supplied offline mock_llm.py. The pipeline processes 164 support tickets with privacy protection, input guardrails, retry handling, response validation, token budgeting and customer-based routing.
 
 The supplied mock LLM was used without modification. No external model API or network connection was required.
 
 ### 2. Input Guardrails
+
 Tickets were checked before any model call.
 
 Empty or whitespace-only tickets were assigned skipped_empty.
@@ -570,6 +611,7 @@ Both groups were excluded from model calls.
 All four long tickets estimated to 734 tokens.
 
 ### 3. Personal Information Redaction
+
 Three regular expressions were applied in the required order before constructing model prompts.
 
 | Information | Placeholder | Substitutions |
@@ -591,6 +633,7 @@ Result: Zero remaining email addresses, phone numbers and order IDs.
 The user message content sent to the mock model consisted exactly of the redacted ticket text.
 
 ### 4. Classification Prompts
+
 Two system prompts were implemented:
 
 Zero-shot prompt: classification instructions without examples.
@@ -600,6 +643,7 @@ Few-shot prompt: classification instructions with labelled billing, delivery and
 Both prompts required JSON-only responses containing a category and reason, with four allowed categories: billing, delivery, technical and fraud.
 
 ### 5. Retry Handling
+
 Every model call was wrapped in a retry function.
 
 Maximum retries: 3.
@@ -613,6 +657,7 @@ One log entry for each retry, including ticket ID, retry number and wait time.
 Across each full run, 19 transient failures occurred. All 19 transient failures were recovered on the first retry, with no permanent failures.
 
 ### 6. Response Validation
+
 Every model response was validated.
 
 Valid JSON with an allowed category: classified_json.
@@ -642,6 +687,7 @@ Final status counts for each full run:
 | Total | 164 |
 
 ### 7. Zero-shot vs Few-shot Comparison
+
 Both approaches classified 147 tickets.
 
 | Metric | Zero-shot | Few-shot |
@@ -673,6 +719,7 @@ The zero-shot confusion matrix was:
 The few-shot prompt required 8,736 additional tokens, approximately 70.6% more than zero-shot. However, accuracy improved from 85.71% to 100%. The additional token cost is justified when accurate classification, particularly of fraud and technical tickets, is important.
 
 ### 8. Token Budget Demonstration
+
 The zero-shot pipeline was executed with a token budget of 6,000.
 
 | Metric | Result |
@@ -692,9 +739,10 @@ The budget is checked before each model call. Therefore, the final permitted cal
 Output: outputs/triage_budget_demo.csv
 
 ### 9. Customer-Based Routing
+
 The final few-shot pipeline used a token budget of 100,000 and customer segment information from Part B.
 
-Routing rules:
+#### Routing rules
 
 Empty, long, invalid-output and budget-exhausted tickets were routed to human review with NORMAL priority.
 
@@ -706,7 +754,7 @@ Other classified tickets were routed to the support queue with NORMAL priority.
 
 Customers without a segment record were treated as non-premium.
 
-Final routing results:
+#### Final routing results
 
 | Route | Tickets |
 
@@ -722,7 +770,7 @@ Final routing results:
 
 | Total | 164 |
 
-Priority distribution:
+#### Priority distribution
 
 | Priority | Tickets |
 
@@ -735,6 +783,7 @@ Priority distribution:
 Output: outputs/triage_results.csv
 
 ### 10. Validation and Safety
+
 Automated assertions verified:
 
 All 164 tickets were retained.
@@ -754,6 +803,7 @@ Final token usage matched the recorded total.
 Final validation result: ALL FINAL TRIAGE VALIDATION CHECKS PASSED.
 
 ### 11. Limitations
+
 The offline mock LLM is deterministic and does not represent the full behaviour of a production language model.
 
 The classification results are based on the supplied mock's keyword logic.
@@ -765,10 +815,12 @@ Token estimation uses the mock's word-based approximation rather than a producti
 Human review is required for invalid, empty, long and budget-exhausted tickets.
 
 ## Part D – Policy RAG and Customer Support Agent
+
 ### Task 1 – Policy Document Chunking
+
 The five policy documents were loaded from the data/policies/ directory and divided into smaller chunks using a fixed-size chunking strategy.
 
-Configuration:
+#### Configuration
 
 Chunk size: 40 words
 
@@ -778,7 +830,7 @@ Step size: 30 words
 
 The overlap ensures that important information near chunk boundaries is not completely lost.
 
-Chunking results:
+#### Chunking results
 
 | Policy Document | Number of Chunks |
 
@@ -799,6 +851,7 @@ Chunking results:
 The chunks were stored with their corresponding source filenames to maintain traceability.
 
 ### Task 2 – TF-IDF Retrieval
+
 TF-IDF (Term Frequency–Inverse Document Frequency) was used to convert policy chunks into numerical vectors.
 
 Term Frequency (TF): Measures how frequently a word appears in a document.
@@ -816,9 +869,10 @@ The top three retrieved chunks belonged to refund_policy.txt.
 Limitation: TF-IDF mainly relies on keyword matching. It may not retrieve semantically similar information when different words are used to express the same meaning.
 
 ### Task 3 – Policy Question Answering
+
 An answer(question) function was implemented to generate answers using the retrieved policy information.
 
-Workflow:
+#### Workflow
 
 Receive a user question.
 
@@ -838,7 +892,7 @@ If the required information is unavailable, the assistant returns:
 
 I could not find the information in the supplied policies.
 
-Example test question:
+#### Example test question
 
 What percentage of the order amount is refunded when delivery takes more than 45 minutes?
 
@@ -847,6 +901,7 @@ Result: The answer correctly identified that the customer receives a full refund
 Retrieved sources included refund_policy.txt and delivery_policy.txt.
 
 ### Task 4 – Policy Evaluation
+
 The RAG system was evaluated using all 14 questions in policy_eval.csv.
 
 The evaluation checked:
@@ -857,7 +912,7 @@ Whether the generated answer contained the expected fact.
 
 Whether unanswerable questions correctly triggered the fallback response.
 
-Results with 10-word overlap:
+#### Results with 10-word overlap
 
 | Evaluation Metric | Result |
 
@@ -875,7 +930,7 @@ Results with 10-word overlap:
 
 | Unanswerable questions handled with fallback | 2/2 |
 
-Comparison without overlap:
+#### Comparison without overlap
 
 | Evaluation Metric | Result |
 
@@ -890,6 +945,7 @@ Comparison without overlap:
 The overlap-based approach achieved better answer accuracy because it helped preserve information that could otherwise be separated across chunk boundaries.
 
 ### Task 5 – Tool Definitions and Refund Ledger
+
 Five tools were implemented to allow the support agent to interact with the order database and policy documents.
 
 | Tool | Purpose |
@@ -923,6 +979,7 @@ Refund amount in INR
 This provides a record of refund and escalation actions.
 
 ### Task 6 – ReAct Agent Implementation
+
 A ReAct (Reasoning and Acting) agent was implemented using the mock LLM.
 
 The agent follows an iterative process:
@@ -943,7 +1000,7 @@ The agent was configured with a maximum of 6 model iterations.
 
 Seven predefined customer support scenarios were executed.
 
-Scenario results:
+#### Scenario results
 
 | Scenario | Expected Outcome | Actual Outcome |
 
@@ -966,6 +1023,7 @@ Scenario results:
 The agent's results, model calls, token usage, and individual tool execution steps were saved in outputs/agent_runs.jsonl.
 
 ### Task 7 – Safety Limits
+
 Safety controls were implemented to prevent the agent from running indefinitely or consuming excessive resources.
 
 Three limits were configured:
@@ -978,7 +1036,7 @@ Time limit: 10 seconds.
 
 The agent returns a human-support fallback response when a safety limit is reached.
 
-Safety test results:
+#### Safety test results
 
 | Test | Configuration | Result |
 
@@ -995,6 +1053,7 @@ The token-limit test stopped the agent before executing another tool after the t
 These controls help ensure that the agent operates within predefined resource limits.
 
 ### Task 8 – Checkpointing and Resume
+
 Checkpointing was implemented to preserve the agent's execution state after every tool observation.
 
 Each checkpoint stores:
@@ -1019,7 +1078,7 @@ Checkpoint files are stored in the state/ directory in JSON format.
 
 A resume_agent(run_id) function was implemented to load a saved checkpoint and continue execution from the previous state.
 
-Crash and resume demonstration:
+#### Crash and resume demonstration
 
 The agent executed get_order.
 
@@ -1035,7 +1094,7 @@ The agent executed issue_refund.
 
 The agent returned the final refund response.
 
-Final result:
+#### Final result
 
 | Metric | Result |
 
@@ -1056,6 +1115,7 @@ Final result:
 The demonstration confirmed that the agent resumed successfully without repeating previously completed tools.
 
 ### Task 9 – ReAct vs Plan-and-Execute
+
 ReAct was selected for the Instamart Customer Intelligence & Support Copilot because it allows the agent to reason, execute a tool, and observe the result before deciding the next action.
 
 In the ReAct implementation, the agent uses multiple model calls depending on the scenario. For example, S1 required 5 model calls and 1,022 tokens to complete the refund process. Other scenarios required between 2 and 6 model calls, depending on the complexity of the request.
@@ -1069,6 +1129,7 @@ Although ReAct can require multiple model calls and additional tokens, it provid
 Therefore, ReAct was chosen because this project requires dynamic decisions based on tool observations rather than a fixed sequence of actions.
 
 ### Conclusion
+
 Part D successfully implemented a policy-based Retrieval-Augmented Generation (RAG) system and a ReAct customer support agent.
 
 The system can retrieve relevant policy information, answer customer questions, execute refund-related tools, handle different customer scenarios, enforce safety limits, and recover from simulated crashes using checkpointing.
@@ -1076,17 +1137,31 @@ The system can retrieve relevant policy information, answer customer questions, 
 All nine implementation tasks were completed using the supplied mock LLM and local project data, without requiring paid external APIs.
 
 ## Limitations and Next Steps
+
 ### Limitations
+
 The project uses the supplied offline mock LLM rather than a production language model.
+
 TF-IDF retrieval relies mainly on keyword matching and may miss semantically similar wording.
+
 Customer lapse predictions are based on historical data and do not guarantee future customer behaviour.
+
 The retention list is illustrative; premium-customer labels use full-window RFM data, including September 2025, as explained in Part B.
+
 Refund and escalation actions are recorded in a local JSONL ledger. They are not connected to a real payment gateway or production order-management system.
+
 The mock LLM and local datasets do not represent all conditions that would occur in a live customer-support environment.
+
 ### Next Steps
+
 Integrate a production-grade language model with appropriate privacy and security controls.
+
 Improve policy retrieval using semantic embeddings or a hybrid retrieval approach.
+
 Connect the agent to a secure, real-time order-management system.
+
 Add an approval workflow and safeguards before processing real refunds.
+
 Monitor model performance, retrieval quality and customer-support outcomes using new data.
+
 Add automated tests and monitoring for failures, latency, token usage and tool execution.
