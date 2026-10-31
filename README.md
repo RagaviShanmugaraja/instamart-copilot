@@ -39,19 +39,18 @@ VS Code
 1. Clone the repository
 
 git clone https://github.com/RagaviShanmugaraja/instamart-copilot.git
-
 cd instamart-copilot
+
 2. Create a virtual environment
-
 python -m venv .venv
+
 3. Install dependencies
-
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
 4. Generate the datasets
-
 .\.venv\Scripts\python.exe generate_data.py
-5. Run the data preparation and analysis scripts
 
+5. Run the data preparation and analysis scripts
 .\.venv\Scripts\python.exe audit_data.py
 
 .\.venv\Scripts\python.exe clean_customers.py
@@ -65,12 +64,15 @@ python -m venv .venv
 .\.venv\Scripts\python.exe run_sql.py
 
 .\.venv\Scripts\python.exe pandas_analysis.py
+
 6. Run Part B – Customer Intelligence
 .\.venv\Scripts\python.exe rfm_analysis.py
 .\.venv\Scripts\python.exe customer_clustering.py
 .\.venv\Scripts\python.exe lapse_prediction.py
+
 7. Run Part C – Support Ticket Triage
 .\.venv\Scripts\python.exe triage.py
+
 8. Run Part D – Policy RAG and Refund Agent
 The policy retrieval functions are implemented in policy_rag.py and are used by the refund agent.
 
